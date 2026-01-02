@@ -34,14 +34,6 @@
             --light-text-secondary: #3C3C43;
             --light-text-tertiary: #8E8E93;
             --light-border: #D1D1D6;
-            
-            --dark-bg: #000000;
-            --dark-bg-secondary: #1C1C1E;
-            --dark-bg-tertiary: #2C2C2E;
-            --dark-text-primary: #FFFFFF;
-            --dark-text-secondary: #E5E5EA;
-            --dark-text-tertiary: #8E8E93;
-            --dark-border: #38383A;
         }
         
         body {
@@ -49,8 +41,6 @@
             color: var(--light-text-primary);
             padding: 0;
             line-height: 1.6;
-            transition: background-color 0.3s ease;
-            /* 避免 iOS 底部安全區域遮擋 */
             padding-bottom: env(safe-area-inset-bottom);
         }
         
@@ -58,8 +48,6 @@
             max-width: 800px;
             margin: 0 auto;
             background: var(--light-bg-secondary);
-            border-radius: 0;
-            box-shadow: none;
             overflow: hidden;
             position: relative;
             display: flex;
@@ -67,13 +55,13 @@
             min-height: 100vh;
         }
         
-        /* ===== Header 毛玻璃效果 ===== */
+        /* ===== Header (移除夜間按鈕，回歸置中簡潔設計) ===== */
         .trip-header {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             color: var(--light-text-primary);
-            padding: 16px 20px 12px;
-            text-align: center;
+            padding: 24px 20px 16px;
+            text-align: center; /* 標題置中 */
             flex-shrink: 0;
             position: sticky;
             top: 0;
@@ -82,59 +70,34 @@
         }
         
         .trip-header h1 {
-            font-size: 18px;
+            font-size: 22px; 
             font-weight: 700;
-            margin-bottom: 4px;
-            line-height: 1.2;
+            margin-bottom: 8px;
+            line-height: 1.3;
             letter-spacing: -0.3px;
         }
         
         .trip-header p {
-            font-size: 13px;
+            font-size: 15px; 
             color: var(--light-text-tertiary);
             font-weight: 500;
             margin-bottom: 0;
         }
         
-        #darkModeBtn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: none;
-            background: rgba(0, 0, 0, 0.1);
-            color: var(--light-text-primary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            backdrop-filter: blur(20px);
-        }
-        
-        #darkModeBtn:hover {
-            background: rgba(0, 0, 0, 0.15);
-            transform: scale(1.05);
-        }
-        
-        #darkModeBtn:active {
-            transform: scale(0.95);
-        }
-        
-        /* ===== Tab 導航 - 毛玻璃 ===== */
+        /* ===== Tab 導航 ===== */
         .tab-nav {
             display: flex;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             flex-shrink: 0;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            gap: 4px;
-            padding: 0 8px;
+            gap: 8px; 
+            padding: 6px 10px; /* 稍微調整 padding 讓視覺更貼合 */
             position: sticky;
-            top: 66px; /* 根據 Header 高度調整 */
+            top: 98px; /* 根據新的 Header 高度調整 */
             z-index: 99;
         }
         
@@ -144,18 +107,17 @@
         
         .tab-btn {
             flex: 1;
-            min-width: 60px;
-            padding: 12px 8px;
+            min-width: 75px;
+            padding: 12px 10px;
             border: none;
             background: transparent;
             color: var(--light-text-tertiary);
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             border-radius: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             white-space: nowrap;
-            position: relative;
             letter-spacing: -0.2px;
         }
         
@@ -175,7 +137,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            padding: 16px 20px 20px;
+            padding: 20px 24px 24px;
             display: none;
             background: var(--light-bg);
         }
@@ -192,7 +154,7 @@
         
         /* ===== Progress Bar ===== */
         .progress-bar-container {
-            padding: 12px 20px;
+            padding: 14px 20px;
             flex-shrink: 0;
             background: var(--light-bg-secondary);
             border-bottom: 1px solid var(--light-border);
@@ -201,16 +163,16 @@
         .progress-header {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 13px;
             color: var(--light-text-tertiary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         
         .progress-bar-wrap {
-            height: 6px;
+            height: 8px;
             background: var(--light-border);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
         }
         
@@ -223,9 +185,9 @@
         
         /* ===== 通用標題 ===== */
         .content-title {
-            font-size: 16px;
+            font-size: 20px;
             color: var(--light-text-primary);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             font-weight: 700;
             letter-spacing: -0.3px;
         }
@@ -234,48 +196,38 @@
         .card {
             background: var(--light-bg-secondary);
             border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
             border: 1px solid var(--light-border);
             transition: all 0.3s ease;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
         
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-color: var(--light-border);
-        }
-        
         /* ===== 航班資訊 ===== */
         .flight-item {
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
             line-height: 1.6;
-            padding: 12px 14px;
+            padding: 14px 16px;
             background: var(--light-bg-secondary);
             border-radius: 12px;
             border: 1px solid var(--light-border);
-            border-left: 4px solid var(--ios-blue);
+            border-left: 5px solid var(--ios-blue);
         }
         
         /* ===== 成員卡片 ===== */
         .member-item {
-            font-size: 13px;
-            margin-bottom: 10px;
-            padding: 14px 16px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding: 16px 18px;
             background: var(--light-bg-secondary);
             border-radius: 14px;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--light-border);
-            border-left: 4px solid var(--ios-green);
+            border-left: 5px solid var(--ios-green);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
-        }
-        
-        .member-item:hover {
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.1);
-            border-color: var(--ios-green);
         }
         
         .member-item > div {
@@ -284,14 +236,14 @@
         
         .member-item div:first-child > div:first-child {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 17px;
             color: var(--light-text-primary);
             margin-bottom: 8px;
         }
         
         .member-item div:first-child > div:nth-child(2),
         .member-item div:first-child > div:nth-child(3) {
-            font-size: 12px;
+            font-size: 15px;
             color: var(--light-text-secondary);
             margin-top: 6px;
             display: flex;
@@ -309,32 +261,19 @@
             margin-bottom: 10px;
         }
         
-        /* ===== 行李清單 ===== */
-        .luggage-item {
-            font-size: 13px;
-            margin-bottom: 8px;
-            padding: 12px 14px;
-            background: var(--light-bg-secondary);
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--light-border);
-        }
-        
         /* ===== 輸入框優化 ===== */
         .input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         
         .input-group input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--light-border);
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 16px;
             background: var(--light-bg-secondary);
             color: var(--light-text-primary);
             transition: all 0.3s ease;
@@ -344,12 +283,11 @@
             outline: none;
             border-color: var(--ios-blue);
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-            background: var(--light-bg-secondary);
         }
         
         /* ===== 日期卡片 ===== */
         .day-card {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             border: 1px solid var(--light-border);
             border-radius: 14px;
             overflow: hidden;
@@ -358,13 +296,9 @@
             transition: all 0.3s ease;
         }
         
-        .day-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        
         .day-title {
-            padding: 14px 16px;
-            font-size: 14px;
+            padding: 18px 20px;
+            font-size: 17px;
             font-weight: 700;
             display: flex;
             justify-content: space-between;
@@ -386,7 +320,7 @@
         }
         
         .day-title .toggle-icon {
-            font-size: 14px;
+            font-size: 16px;
             color: var(--ios-blue);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -396,7 +330,7 @@
         }
         
         .day-detail {
-            padding: 14px 16px;
+            padding: 16px 20px;
             display: none;
         }
         
@@ -417,21 +351,21 @@
         }
         
         .schedule-item {
-            margin: 10px 0;
-            padding-left: 12px;
-            border-left: 3px solid var(--ios-blue);
-            font-size: 13px;
+            margin: 12px 0;
+            padding-left: 14px;
+            border-left: 4px solid var(--ios-blue);
+            font-size: 16px;
             color: var(--light-text-secondary);
-            line-height: 1.5;
+            line-height: 1.6;
         }
         
         /* ===== 餐食和住宿 ===== */
         .meal-info, .stay-info {
-            margin-top: 12px;
-            padding: 12px 14px;
+            margin-top: 14px;
+            padding: 14px 16px;
             border-radius: 12px;
-            font-size: 12px;
-            border-left: 4px solid var(--ios-orange);
+            font-size: 15px;
+            border-left: 5px solid var(--ios-orange);
         }
         
         .meal-info {
@@ -441,13 +375,13 @@
         
         .meal-info h4 {
             color: var(--ios-orange);
-            margin-bottom: 6px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 15px;
             font-weight: 700;
         }
         
         .meal-item {
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             color: var(--light-text-secondary);
         }
         
@@ -458,20 +392,20 @@
         }
         
         .remark {
-            margin-top: 12px;
-            padding: 12px 14px;
+            margin-top: 14px;
+            padding: 14px 16px;
             background: rgba(255, 204, 0, 0.08);
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 15px;
             color: var(--light-text-secondary);
-            border-left: 4px solid var(--ios-yellow);
+            border-left: 5px solid var(--ios-yellow);
         }
         
         /* ===== 貨幣換算 ===== */
         .currency-inputs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         
         .currency-input-group {
@@ -479,74 +413,66 @@
         }
         
         .currency-input-group label {
-            font-size: 11px;
+            font-size: 14px;
             color: var(--light-text-tertiary);
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         
         .currency-input-group input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid var(--light-border);
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 16px;
             background: var(--light-bg-secondary);
             color: var(--light-text-primary);
             font-family: 'Monaco', monospace;
         }
         
         .currency-rate {
-            font-size: 12px;
+            font-size: 14px;
             color: var(--light-text-secondary);
             background: var(--light-bg-secondary);
-            padding: 12px 14px;
+            padding: 14px 16px;
             border-radius: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             border: 1px solid var(--light-border);
-            border-left: 4px solid var(--ios-cyan);
+            border-left: 5px solid var(--ios-cyan);
         }
         
         /* ===== 打卡記錄 ===== */
         .checkin-item {
-            margin-bottom: 12px;
-            padding: 14px 16px;
+            margin-bottom: 14px;
+            padding: 16px 18px;
             background: var(--light-bg-secondary);
             border-radius: 14px;
             border: 1px solid var(--light-border);
-            border-left: 4px solid var(--ios-pink);
+            border-left: 5px solid var(--ios-pink);
         }
         
         .checkin-item h4 {
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: var(--light-text-primary);
         }
         
         .checkin-time {
-            font-size: 11px;
+            font-size: 13px;
             color: var(--light-text-tertiary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 500;
-        }
-        
-        .checkin-photo {
-            width: 100px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 6px;
         }
         
         /* ===== 按鈕設計 - iOS風格 ===== */
         .btn-small {
-            padding: 8px 12px;
+            padding: 8px 14px;
             border: none;
             border-radius: 10px;
             color: white;
-            font-size: 12px;
+            font-size: 14px;
             cursor: pointer;
             margin-left: 6px;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -565,46 +491,28 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
-        .btn-green {
-            background: linear-gradient(135deg, var(--ios-green), #2ecc71);
-        }
+        .btn-green { background: linear-gradient(135deg, var(--ios-green), #2ecc71); }
+        .btn-green:hover { background: linear-gradient(135deg, #2ecc71, #27ae60); }
         
-        .btn-green:hover {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-        }
+        .btn-blue { background: linear-gradient(135deg, var(--ios-blue), #0051d5); }
+        .btn-blue:hover { background: linear-gradient(135deg, #0051d5, #0047cc); }
         
-        .btn-blue {
-            background: linear-gradient(135deg, var(--ios-blue), #0051d5);
-        }
-        
-        .btn-blue:hover {
-            background: linear-gradient(135deg, #0051d5, #0047cc);
-        }
-        
-        .btn-orange {
-            background: linear-gradient(135deg, var(--ios-orange), #ff8a00);
-        }
-        
-        .btn-orange:hover {
-            background: linear-gradient(135deg, #ff8a00, #ff7b00);
-        }
+        .btn-orange { background: linear-gradient(135deg, var(--ios-orange), #ff8a00); }
+        .btn-orange:hover { background: linear-gradient(135deg, #ff8a00, #ff7b00); }
         
         .btn-red {
             background: linear-gradient(135deg, var(--ios-red), #ff1744);
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 6px 12px;
+            font-size: 13px;
             margin-left: 4px;
         }
-        
-        .btn-red:hover {
-            background: linear-gradient(135deg, #ff1744, #ff0040);
-        }
+        .btn-red:hover { background: linear-gradient(135deg, #ff1744, #ff0040); }
         
         /* ===== 頁腳 ===== */
         .trip-footer {
             text-align: center;
-            padding: 12px 20px;
-            font-size: 11px;
+            padding: 16px 20px;
+            font-size: 13px;
             color: var(--light-text-tertiary);
             flex-shrink: 0;
             border-top: 1px solid var(--light-border);
@@ -612,247 +520,33 @@
             font-weight: 500;
         }
         
-        /* ===== 深色模式 ===== */
-        body.dark {
-            background-color: var(--dark-bg);
-            color: var(--dark-text-primary);
-        }
-        
-        .trip-app.dark {
-            background: var(--dark-bg-secondary);
-        }
-        
-        .trip-header.dark {
-            background: rgba(28, 28, 30, 0.8);
-            border-bottom-color: var(--dark-border);
-        }
-        
-        .trip-header.dark h1 {
-            color: var(--dark-text-primary);
-        }
-        
-        .trip-header.dark p {
-            color: var(--dark-text-tertiary);
-        }
-        
-        #darkModeBtn.dark {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--dark-text-primary);
-        }
-        
-        #darkModeBtn.dark:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .tab-nav.dark {
-            background: rgba(28, 28, 30, 0.5);
-            border-bottom-color: var(--dark-border);
-        }
-        
-        .tab-btn.dark {
-            color: var(--dark-text-tertiary);
-        }
-        
-        .tab-btn.dark:hover {
-            color: var(--ios-blue);
-            background: rgba(0, 122, 255, 0.12);
-        }
-        
-        .tab-btn.dark.active {
-            color: var(--ios-blue);
-            background: rgba(0, 122, 255, 0.12);
-        }
-        
-        .tab-content.dark {
-            background: var(--dark-bg);
-        }
-        
-        .progress-bar-container.dark {
-            background: var(--dark-bg-secondary);
-            border-bottom-color: var(--dark-border);
-        }
-        
-        .progress-header.dark {
-            color: var(--dark-text-tertiary);
-        }
-        
-        .progress-bar-wrap.dark {
-            background: var(--dark-border);
-        }
-        
-        .content-title.dark {
-            color: var(--dark-text-primary);
-        }
-        
-        .card.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-        }
-        
-        .flight-item.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-        }
-        
-        .member-item.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-        }
-        
-        .member-item.dark:hover {
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.15);
-        }
-        
-        .luggage-item.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-        }
-        
-        .input-group input.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-            color: var(--dark-text-primary);
-        }
-        
-        .input-group input.dark:focus {
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
-        }
-        
-        .day-card.dark {
-            border-color: var(--dark-border);
-            background: var(--dark-bg-secondary);
-        }
-        
-        .day-title.dark {
-            background: var(--dark-bg-secondary);
-            border-bottom-color: var(--dark-border);
-        }
-        
-        .day-title.dark:hover {
-            background: var(--dark-bg-tertiary);
-        }
-        
-        .day-title.dark .day-num {
-            color: var(--ios-blue);
-        }
-        
-        .day-title.dark .toggle-icon {
-            color: var(--ios-blue);
-        }
-        
-        .day-detail.dark {
-            background: var(--dark-bg-secondary);
-        }
-        
-        .schedule-item.dark {
-            color: var(--dark-text-secondary);
-        }
-        
-        .meal-info.dark {
-            background: rgba(255, 149, 0, 0.12);
-        }
-        
-        .meal-info.dark h4 {
-            color: var(--ios-orange);
-        }
-        
-        .meal-item.dark {
-            color: var(--dark-text-secondary);
-        }
-        
-        .stay-info.dark {
-            color: var(--dark-text-secondary);
-            background: rgba(0, 199, 190, 0.12);
-        }
-        
-        .remark.dark {
-            background: rgba(255, 204, 0, 0.12);
-            color: var(--dark-text-secondary);
-        }
-        
-        .currency-input-group input.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-            color: var(--dark-text-primary);
-        }
-        
-        .currency-rate.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-            color: var(--dark-text-secondary);
-        }
-        
-        .checkin-item.dark {
-            background: var(--dark-bg-secondary);
-            border-color: var(--dark-border);
-        }
-        
-        .checkin-item.dark h4 {
-            color: var(--dark-text-primary);
-        }
-        
-        .trip-footer.dark {
-            border-top-color: var(--dark-border);
-            background: var(--dark-bg-secondary);
-            color: var(--dark-text-tertiary);
-        }
-        
         /* ===== 響應式設計 ===== */
         @media (max-width: 480px) {
             .trip-header {
-                padding: 14px 16px 10px;
+                padding: 16px 18px 12px;
             }
-            
             .trip-header h1 {
-                font-size: 16px;
+                font-size: 20px;
             }
-            
-            .trip-header p {
-                font-size: 12px;
-            }
-            
             .tab-btn {
-                font-size: 11px;
-                min-width: 55px;
+                font-size: 15px;
+                min-width: 65px;
             }
-            
             .tab-content {
-                padding: 14px 16px 16px;
-            }
-            
-            .btn-small {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-        }
-        
-        /* ===== 系統深色模式 ===== */
-        @media (prefers-color-scheme: dark) {
-            body:not(.light) {
-                background: var(--dark-bg);
-                color: var(--dark-text-primary);
-            }
-            
-            .trip-app:not(.light) {
-                background: var(--dark-bg-secondary);
-            }
-            
-            .trip-header:not(.light) {
-                background: rgba(28, 28, 30, 0.8);
+                padding: 16px 18px 18px;
             }
         }
     </style>
 </head>
 <body>
     <div class="trip-app">
-        <!-- 頂部標題區 -->
+        <!-- 頂部標題區 (移除按鈕，簡化) -->
         <div class="trip-header">
             <h1>深度沙壩秘境7日越南航空考察團</h1>
             <p>2026.01.23 ~ 2026.01.29｜7天6夜｜長榮航空</p>
-            <button id="darkModeBtn">🌙 夜間</button>
         </div>
 
-        <!-- 行程進度條（TAB上方） -->
+        <!-- 行程進度條 -->
         <div class="progress-bar-container">
             <div class="progress-header">
                 <span>行程進度</span>
@@ -890,7 +584,7 @@
             <div class="flight-item">
                 <strong>訂位代號：</strong> FZG27B（所有成員共用）
             </div>
-            <div style="margin-top: 12px;">
+            <div style="margin-top: 14px;">
                 <button class="btn-small btn-green" onclick="setReminder('去程航班BR397', '2026-01-23 06:15')">⏰ 去程提醒</button>
                 <button class="btn-small btn-green" onclick="setReminder('返程航班BR386', '2026-01-29 15:20')">⏰ 返程提醒</button>
             </div>
@@ -899,7 +593,7 @@
         <!-- TAB 2: 成員 -->
         <div id="members" class="tab-content">
             <div class="content-title">👥 同行成員</div>
-            <div style="background: #1e293b; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12px; color: #94a3b8;">
+            <div style="background: #1e293b; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 14px; color: #94a3b8;">
                 <div style="margin-bottom: 6px;">✈️ 訂位代號: <span style="color: #fff; font-weight: bold;">FZG27B</span> (共同)</div>
                 <div>💡 機票票號為登機關鍵憑證，建議單獨留存</div>
             </div>
@@ -1173,7 +867,7 @@
             </div>
             <div class="currency-rate">
                 當前匯率：1 TWD ≈ <span id="exchangeRate">3300</span> VND
-                <button class="btn-small btn-green" style="font-size: 10px; padding: 3px 8px;" onclick="updateExchangeRate()">更新</button>
+                <button class="btn-small btn-green" style="font-size: 12px; padding: 4px 10px;" onclick="updateExchangeRate()">更新</button>
             </div>
         </div>
 
@@ -1197,8 +891,8 @@
             luggage: 'tripApp_luggage',
             checkins: 'tripApp_checkins',
             reminders: 'tripApp_reminders',
-            exchangeRate: 'tripApp_exchangeRate',
-            darkMode: 'tripApp_darkMode'
+            exchangeRate: 'tripApp_exchangeRate'
+            // 移除 darkMode key
         };
 
         const DEFAULT_LUGGAGE = [
@@ -1237,14 +931,12 @@
         }
 
         // ===== 頁面初始化 =====
-        // 統一使用 DOMContentLoaded，移除 window.onload 避免衝突
         document.addEventListener('DOMContentLoaded', function() {
             initializePage();
-            // 移除 initializeDayCards() 調用，解決雙重觸發導致打不開的問題
         });
 
         function initializePage() {
-            // 1. 初始化成員列表 (修正：先讀取，如果沒有才用預設值)
+            // 1. 初始化成員列表
             let members = loadFromStorage(STORAGE_KEYS.members);
             if (!members || members.length === 0) {
                 members = DEFAULT_MEMBERS;
@@ -1256,50 +948,31 @@
             const checkins = loadFromStorage(STORAGE_KEYS.checkins) || [];
             renderCheckInList(checkins);
             
-            // 3. 初始化深色模式
-            const isDarkMode = loadFromStorage(STORAGE_KEYS.darkMode, false);
-            if (isDarkMode) {
-                enableDarkMode();
-            }
-            
-            // 4. 初始化貨幣匯率
+            // 3. 初始化貨幣匯率
             const rate = loadFromStorage(STORAGE_KEYS.exchangeRate, 3300);
             const rateEl = document.getElementById('exchangeRate');
             if(rateEl) rateEl.textContent = rate;
-            
-            // 5. 綁定深色模式按鈕
-            const darkBtn = document.getElementById('darkModeBtn');
-            if(darkBtn) darkBtn.addEventListener('click', toggleDarkMode);
 
-            // 6. 更新進度條
+            // 4. 更新進度條
             updateProgress();
         }
 
         // ===== 互動邏輯 =====
         function switchTab(event, tabName) {
-            // 隱藏所有 tab 內容
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            
-            // 移除所有按鈕 active
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // 顯示選中內容
             const target = document.getElementById(tabName);
             if(target) target.classList.add('active');
-            
-            // 按鈕變色
             event.target.classList.add('active');
         }
         
-        // 核心修正：只保留這個 toggleDay 函數供 HTML onclick 調用
         function toggleDay(dayTitle) {
             const detail = dayTitle.nextElementSibling;
             const icon = dayTitle.querySelector('.toggle-icon');
-            // 切換 CSS class 實現動畫
             dayTitle.classList.toggle('collapsed');
             detail.classList.toggle('show');
         }
@@ -1315,12 +988,9 @@
                 return;
             }
 
-            // 簡單的 alert 模擬通知
             alert(`已設置提醒：${title}\n將於 ${targetTime} 通知您。`);
             
-            // 實際倒數
             setTimeout(() => {
-                // 嘗試瀏覽器通知
                 if ('Notification' in window && Notification.permission === 'granted') {
                     new Notification('行程提醒', { body: `即將開始：${title}` });
                 } else {
@@ -1330,7 +1000,6 @@
         }
 
         function navigateTo(lat, lng, name) {
-            // 強制使用 HTTPS 的 Google Maps 連結，解決 GitHub Pages Mixed Content 問題
             const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
             window.open(url, '_blank');
         }
@@ -1427,7 +1096,6 @@
                 saveToStorage(STORAGE_KEYS.exchangeRate, rate);
                 document.getElementById('exchangeRate').textContent = rate;
                 alert('匯率已更新！');
-                // 重新計算當前輸入
                 convertTWDToVND();
             }
         }
@@ -1461,26 +1129,7 @@
             if(txt) txt.textContent = text;
         }
 
-        // ===== 深色模式 =====
-        let darkMode = false;
-        function toggleDarkMode() {
-            darkMode = !darkMode;
-            saveToStorage(STORAGE_KEYS.darkMode, darkMode);
-            if (darkMode) enableDarkMode();
-            else disableDarkMode();
-        }
-
-        function enableDarkMode() {
-            document.body.classList.add('dark');
-            const btn = document.getElementById('darkModeBtn');
-            if(btn) btn.textContent = '☀️ 日間';
-        }
-
-        function disableDarkMode() {
-            document.body.classList.remove('dark');
-            const btn = document.getElementById('darkModeBtn');
-            if(btn) btn.textContent = '🌙 夜間';
-        }
+        // 移除所有深色模式相關 JS 邏輯
     </script>
 </body>
 </html>
