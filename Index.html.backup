@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>深度沙壩秘境7日越南航空考察團</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 微軟正黑體, sans-serif;
+        }
+        body {
+            background-color: #f0f4f8;
+            color: #2d3748;
+            padding: 10px;
+            line-height: 1.7;
+        }
+        .trip-app {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            overflow: hidden;
+            position: relative; /* 用於夜間模式按鈕定位 */
+        }
+        .trip-header {
+            background: #2E7D32;
+            color: white;
+            padding: 22px 18px;
+            text-align: center;
+        }
+        .trip-header h1 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .trip-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: lighter;
+            margin-bottom: 6px;
+        }
+        /* 航班資訊樣式 */
+        .flight-info {
+            background: #f8fafc;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .flight-info h3 {
+            font-size: 15px;
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+        .flight-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+        /* 成員管理面板 */
+        .member-panel-container {
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .member-panel-container h3 {
+            font-size: 15px;
+            color: #2E7D32;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        #memberPanel {
+            display: none;
+            margin-top: 8px;
+        }
+        #memberList {
+            margin-bottom: 8px;
+        }
+        .member-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding: 6px;
+            background: #f0fdf4;
+            border-radius: 6px;
+        }
+        /* 行李清單面板 */
+        .luggage-panel-container {
+            padding: 15px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .luggage-panel-container h3 {
+            font-size: 15px;
+            color: #2E7D32;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        #luggagePanel {
+            display: none;
+        }
+        #luggageList {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .luggage-item {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        /* 行程進度條 */
+        .progress-container {
+            padding: 10px 18px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .progress-bar-wrap {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        #progressBar {
+            height: 100%;
+            width: 14%;
+            background: #2E7D32;
+            transition: width 0.3s;
+        }
+        /* 貨幣換算面板 */
+        .currency-panel-container {
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .currency-panel-container h3 {
+            font-size: 15px;
+            color: #2E7D32;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        #currencyPanel {
+            display: none;
+        }
+        .currency-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .currency-input-group {
+            flex: 1;
+        }
+        .currency-input-group label {
+            font-size: 12px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .currency-input-group input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        .currency-rate {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        /* 夜間模式切換按鈕 */
+        #darkModeBtn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            background: #fff;
+            color: #2E7D32;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        /* 行程內容主樣式 */
+        .trip-content {
+            padding: 15px 18px;
+        }
+        .day-card {
+            margin-bottom: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .day-title {
+            background: #f8fafc;
+            padding: 14px 18px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .day-title .day-num {
+            color: #2E7D32;
+        }
+        .day-title .toggle-icon {
+            font-size: 18px;
+            color: #2E7D32;
+        }
+        .day-detail {
+            padding: 16px 18px;
+            font-size: 15px;
+        }
+        .schedule-item {
+            margin: 10px 0;
+            padding-left: 12px;
+            border-left: 3px solid #2E7D32;
+        }
+        /* 餐食樣式 */
+        .meal-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 10px;
+        }
+        .meal-info h4 {
+            font-size: 14px;
+            color: #166534;
+            margin-bottom: 6px;
+        }
+        .meal-item {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        /* 住宿樣式 */
+        .stay-info {
+            margin-top: 8px;
+            color: #0369a1;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+        .remark {
+            margin-top: 6px;
+            color: #f59e0b;
+            font-size: 13px;
+            padding: 6px;
+            background: #fffbeb;
+            border-radius: 8px;
+        }
+        /* 打卡記錄面板 */
+        .checkin-panel-container {
+            padding: 15px 18px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .checkin-panel-container h3 {
+            font-size: 15px;
+            color: #2E7D32;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        #checkInPanel {
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .checkin-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f0fdf4;
+            border-radius: 8px;
+        }
+        .checkin-item h4 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .checkin-time {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .checkin-photo {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+        /* 通用按鈕樣式 */
+        .btn-small {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .btn-small:active {
+            transform: translateY(0);
+        }
+        .btn-green {
+            background: #2E7D32;
+        }
+        .btn-green:hover {
+            background: #1e5a23;
+        }
+        .btn-blue {
+            background: #0369a1;
+        }
+        .btn-blue:hover {
+            background: #025a8e;
+        }
+        .btn-orange {
+            background: #f59e0b;
+        }
+        .btn-orange:hover {
+            background: #d97706;
+        }
+        .btn-red {
+            background: #ef4444;
+            padding: 2px 6px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+        .btn-red:hover {
+            background: #dc2626;
+        }
+        /* 頁腳 */
+        .trip-footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        /* 夜間模式樣式 */
+        body.dark {
+            background: #121212;
+            color: #e0e0e0;
+        }
+        .trip-app.dark {
+            background: #1e1e1e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .trip-header.dark {
+            background: #1e40af;
+        }
+        .flight-info.dark,
+        .member-panel-container.dark,
+        .luggage-panel-container.dark,
+        .progress-container.dark,
+        .currency-panel-container.dark {
+            background: #2d2d2d;
+            border-bottom: 1px solid #3d3d3d;
+        }
+        .day-card.dark {
+            border: 1px solid #3d3d3d;
+        }
+        .day-title.dark {
+            background: #2d2d2d;
+        }
+        .meal-info.dark {
+            background: #1e3a5f;
+        }
+        .remark.dark {
+            background: #374151;
+            color: #fcd34d;
+        }
+        .checkin-panel-container.dark {
+            background: #2d2d2d;
+            border-top: 1px solid #3d3d3d;
+        }
+        /* 適配系統深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body:not(.light) {
+                background: #121212;
+                color: #e0e0e0;
+            }
+            .trip-app:not(.light) {
+                background: #1e1e1e;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            }
+            .trip-header:not(.light) {
+                background: #1e40af;
+            }
+            .flight-info:not(.light),
+            .member-panel-container:not(.light),
+            .luggage-panel-container:not(.light),
+            .progress-container:not(.light),
+            .currency-panel-container:not(.light) {
+                background: #2d2d2d;
+                border-bottom: 1px solid #3d3d3d;
+            }
+            .day-card:not(.light) {
+                border: 1px solid #3d3d3d;
+            }
+            .day-title:not(.light) {
+                background: #2d2d2d;
+            }
+            .meal-info:not(.light) {
+                background: #1e3a5f;
+            }
+            .remark:not(.light) {
+                background: #374151;
+                color: #fcd34d;
+            }
+            .checkin-panel-container:not(.light) {
+                background: #2d2d2d;
+                border-top: 1px solid #3d3d3d;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trip-app">
+        <!-- 頂部標題區 -->
+        <div class="trip-header">
+            <h1>深度沙壩秘境7日越南航空考察團</h1>
+            <p>行程時間：2026.01.23 ~ 2026.01.29（7天6夜）</p>
+            <p>航空公司：長榮航空</p>
+            <!-- 夜間模式切換按鈕 -->
+            <button id="darkModeBtn">切換夜間模式</button>
+        </div>
+
+        <!-- 航班資訊區 -->
+        <div class="flight-info">
+            <h3>✈️ 航班參考</h3>
+            <div class="flight-item"><strong>去程（Day01）：</strong>長榮航空BR397 | 桃園 → 河內 | 09:15 起飛 → 11:35 抵達</div>
+            <div class="flight-item"><strong>返程（Day07）：</strong>長榮航空BR386 | 河內 → 桃園 | 18:20 起飛 → 21:55 抵達</div>
+            <div class="flight-item"><strong>訂位代號：</strong>FZG27B（所有成員共用）</div>
+        </div>
+
+        <!-- 成員管理面板 -->
+        <div class="member-panel-container">
+            <h3 onclick="toggleMemberPanel()">👥 同行成員管理（點擊展開）</h3>
+            <div id="memberPanel">
+                <div id="memberList"></div>
+                <button class="btn-small btn-green" onclick="editMember()">編輯成員資訊</button>
+            </div>
+        </div>
+
+        <!-- 行李清單面板 -->
+        <div class="luggage-panel-container">
+            <h3 onclick="toggleLuggagePanel()">🎒 離線行李清單（點擊展開）</h3>
+            <div id="luggagePanel">
+                <div id="luggageList"></div>
+                <div>
+                    <input type="text" id="newItem" placeholder="添加自訂義物品" style="padding:6px;border:1px solid #e2e8f0;border-radius:6px;width:70%;">
+                    <button class="btn-small btn-green" onclick="addLuggageItem()">添加</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 行程進度條 -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>行程進度</span>
+                <span id="progressText">Day 1 / 7</span>
+            </div>
+            <div class="progress-bar-wrap">
+                <div id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- 貨幣換算面板 -->
+        <div class="currency-panel-container">
+            <h3 onclick="toggleCurrencyPanel()">💵 貨幣換算（點擊展開）</h3>
+            <div id="currencyPanel">
+                <div class="currency-inputs">
+                    <div class="currency-input-group">
+                        <label for="twdInput">新臺幣（TWD）</label>
+                        <input type="number" id="twdInput" placeholder="0" oninput="convertTWDToVND()">
+                    </div>
+                    <div class="currency-input-group">
+                        <label for="vndInput">越南盾（VND）</label>
+                        <input type="number" id="vndInput" placeholder="0" oninput="convertVNDToTWD()">
+                    </div>
+                </div>
+                <div class="currency-rate">
+                    當前匯率：1 TWD ≈ <span id="exchangeRate">3300</span> VND（可手動修改）
+                    <button class="btn-small btn-green" style="font-size:10px;padding:2px 6px;margin-left:8px;" onclick="updateExchangeRate()">更新</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 行程內容主區塊 -->
+        <div class="trip-content" id="tripContent">
+            <!-- Day01 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 01</span>
+                    <span>桃園 → 河內 → 沙壩 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">搭乘長榮航空BR397前往北越河內機場
+                        <button class="btn-small btn-green" onclick="setReminder('去程航班BR397', '2026-01-23 06:15')">⏰ 提醒</button>
+                    </div>
+                    <div class="schedule-item">參訪 Quang Phu Cau 傳統制香村
+                        <button class="btn-small btn-orange" onclick="checkInSpot('傳統制香村', 'Day01')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">造訪 Làng nón Chuông 斗笠村 + DIY斗笠繪畫
+                        <button class="btn-small btn-orange" onclick="checkInSpot('斗笠村DIY繪畫', 'Day01')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">河內最新打卡點：威尼斯Mega Grand World大世界城（4人1艘貢多拉遊船）
+                        <button class="btn-small btn-blue" onclick="navigateTo(21.027763, 105.834160, '威尼斯Mega Grand World')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('威尼斯大世界城', 'Day01')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">安排飯店休息洗澡3小時</div>
+                    <div class="schedule-item">搭乘夜臥巴士前往沙壩
+                        <button class="btn-small btn-green" onclick="setReminder('夜臥巴士前往沙壩', '2026-01-23 18:00')">⏰ 提醒</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：機上餐</div>
+                        <div class="meal-item">午餐：Van Sam自助餐</div>
+                        <div class="meal-item">晚餐：大世界Seoul BBQ吃到飽</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：夜臥巴士</div>
+                </div>
+            </div>
+
+            <!-- Day02 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 02</span>
+                    <span>沙壩登山列車 → 番西邦峰 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">4星飯店內用餐</div>
+                    <div class="schedule-item">搭乘沙壩芒花來回登山列車
+                        <button class="btn-small btn-green" onclick="setReminder('沙壩登山列車', '2026-01-24 09:00')">⏰ 提醒</button>
+                    </div>
+                    <div class="schedule-item">番西邦傳奇纜車 → 登上中南半島第一高峰番西邦峰Fansipan（含登山小火車上行單行）
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3361, 103.8442, '番西邦峰Fansipan')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('番西邦峰', 'Day02')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">漫步山區 Cat Cat Village 貓貓村 + 體驗苗服裝
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3417, 103.8392, 'Cat Cat Village 貓貓村')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('貓貓村苗服體驗', 'Day02')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">遊覽沙壩湖（Ho SaPa）
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3308, 103.8400, '沙壩湖Ho SaPa')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('沙壩湖', 'Day02')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">參觀沙壩教堂（Na Tho SaPa）+ 愛情廣場
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3325, 103.8422, '沙壩教堂Na Tho SaPa')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('沙壩教堂+愛情廣場', 'Day02')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">美憬閣下午茶體驗
+                        <button class="btn-small btn-orange" onclick="checkInSpot('美憬閣下午茶', 'Day02')">📸 打卡</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：酒店內用</div>
+                        <div class="meal-item">午餐：海燕沙壩風味餐</div>
+                        <div class="meal-item">晚餐：Reddao龍魚火鍋</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：4星飯店</div>
+                </div>
+            </div>
+
+            <!-- Day03 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 03</span>
+                    <span>龍雲玻璃橋 → 銀色瀑布 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">造訪絕美梯田踏梅村（Ta Van-赫蒙族）
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3452, 103.8150, '踏梅村Ta Van')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('踏梅村梯田', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">體驗沙壩最美雲霧天空步道：龍雲玻璃橋Rong May Glass Bridge O Quy Ho
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3452, 103.8321, '龍雲玻璃橋Rong May')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('龍雲玻璃橋', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">參觀天堂之門&仙女谷
+                        <button class="btn-small btn-orange" onclick="checkInSpot('天堂之門&仙女谷', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">遊覽銀色瀑布Silver Waterfall
+                        <button class="btn-small btn-blue" onclick="navigateTo(22.3617, 103.8283, '銀色瀑布Silver Waterfall')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('銀色瀑布', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">Moana Sapa 虛擬天堂體驗
+                        <button class="btn-small btn-orange" onclick="checkInSpot('Moana Sapa虛擬天堂', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">河口關口參訪
+                        <button class="btn-small btn-orange" onclick="checkInSpot('河口關口', 'Day03')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">安排飯店休息洗澡3小時</div>
+                    <div class="schedule-item">搭乘夜臥火車（4人一間）前往下一站
+                        <button class="btn-small btn-green" onclick="setReminder('夜臥火車', '2026-01-25 19:00')">⏰ 提醒</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：酒店內用</div>
+                        <div class="meal-item">午餐：鳳凰港式飲茶+火鍋吃到飽</div>
+                        <div class="meal-item">晚餐：天海餐廳越式合菜</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：夜臥火車（4人一間）</div>
+                </div>
+            </div>
+
+            <!-- Day04 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 04</span>
+                    <span>河內 → 下龍灣 5星遊輪 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">4星飯店內用餐</div>
+                    <div class="schedule-item">從河內前往下龍灣
+                        <button class="btn-small btn-green" onclick="setReminder('前往下龍灣', '2026-01-26 08:00')">⏰ 提醒</button>
+                    </div>
+                    <div class="schedule-item">搭乘阿麗莎（Alisa）5星級遊輪過夜
+                        <button class="btn-small btn-orange" onclick="checkInSpot('阿麗莎5星遊輪', 'Day04')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">暢遊海上桂林七大奇景：TITOP英雄島
+                        <button class="btn-small btn-blue" onclick="navigateTo(20.9247, 107.0494, 'TITOP英雄島')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('TITOP英雄島', 'Day04')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">自由體驗【划橡皮艇(Kayak)】或【搭乘竹船】（2選1）探索穿洞（Luon Cave）
+                        <button class="btn-small btn-orange" onclick="checkInSpot('穿洞探索', 'Day04')">📸 打卡</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：酒店內用</div>
+                        <div class="meal-item">午餐：船上自助餐</div>
+                        <div class="meal-item">晚餐：船上精緻套餐</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：阿麗莎（Alisa）5星級遊輪</div>
+                </div>
+            </div>
+
+            <!-- Day05 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 05</span>
+                    <span>下龍灣秘境探索 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">遊覽下龍灣驚訝洞、鬥雞島
+                        <button class="btn-small btn-blue" onclick="navigateTo(20.9400, 107.0350, '驚訝洞')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('驚訝洞+鬥雞島', 'Day05')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">體驗下龍灣女皇雙層覽車
+                        <button class="btn-small btn-orange" onclick="checkInSpot('女皇雙層覽車', 'Day05')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">參觀太陽之眼摩天輪 + 日本花園
+                        <button class="btn-small btn-blue" onclick="navigateTo(20.8570, 106.9940, '太陽之眼摩天輪')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('太陽之眼摩天輪+日本花園', 'Day05')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">光影饗宴：龍騰碧珠洞（巨型天然石灰岩洞穴、沉浸式壯麗實景匯演）
+                        <button class="btn-small btn-orange" onclick="checkInSpot('龍騰碧珠洞光影饗宴', 'Day05')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">享用廣寧主題美饌饗宴
+                        <button class="btn-small btn-orange" onclick="checkInSpot('廣寧主題美饌', 'Day05')">📸 打卡</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：船上早餐</div>
+                        <div class="meal-item">午餐：船上精緻套餐</div>
+                        <div class="meal-item">晚餐：龍騰碧珠洞精緻套餐（含軟飲或啤酒一瓶）</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：下龍灣當地酒店</div>
+                </div>
+            </div>
+
+            <!-- Day06 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 06</span>
+                    <span>陸龍灣 → 三竹寺 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">前往寧平省陸龍灣（長安生態保護區）
+                        <button class="btn-small btn-blue" onclick="navigateTo(20.5333, 105.9250, '陸龍灣長安生態保護區')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('陸龍灣', 'Day06')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">參訪河南三竹世界最大寺廟：三竹寺（含茶水遊船）
+                        <button class="btn-small btn-blue" onclick="navigateTo(20.5667, 105.9000, '三竹寺')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('三竹寺+茶水遊船', 'Day06')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">搭乘電瓶車遊覽三星廟
+                        <button class="btn-small btn-orange" onclick="checkInSpot('三星廟', 'Day06')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">返回河內市區休息
+                        <button class="btn-small btn-green" onclick="setReminder('返回河內市區', '2026-01-28 16:00')">⏰ 提醒</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：酒店內用</div>
+                        <div class="meal-item">午餐：寧平農村風味餐</div>
+                        <div class="meal-item">晚餐：莲花自助餐</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：河內當地酒店</div>
+                </div>
+            </div>
+
+            <!-- Day07 行程 -->
+            <div class="day-card">
+                <div class="day-title" onclick="toggleDay(this)">
+                    <span class="day-num">Day 07</span>
+                    <span>河內市區觀光 → 返程桃園 <span class="toggle-icon">▼</span></span>
+                </div>
+                <div class="day-detail">
+                    <div class="schedule-item">參觀昇龍皇城遺址
+                        <button class="btn-small btn-blue" onclick="navigateTo(21.0285, 105.8341, '昇龍皇城遺址')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('昇龍皇城遺址', 'Day07')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">遊覽36古街（含電瓶車）
+                        <button class="btn-small btn-blue" onclick="navigateTo(21.0333, 105.8500, '河內36古街')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('36古街', 'Day07')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">參觀河內大教堂
+                        <button class="btn-small btn-blue" onclick="navigateTo(21.0347, 105.8442, '河內大教堂')">🗺️ 導航</button>
+                        <button class="btn-small btn-orange" onclick="checkInSpot('河內大教堂', 'Day07')">📸 打卡</button>
+                    </div>
+                    <div class="schedule-item">前往河內機場，搭乘長榮航空BR386返程桃園
+                        <button class="btn-small btn-green" onclick="setReminder('返程航班BR386', '2026-01-29 15:20')">⏰ 提醒</button>
+                    </div>
+                    
+                    <div class="meal-info">
+                        <h4>🍽️ 餐食安排</h4>
+                        <div class="meal-item">早餐：酒店內用</div>
+                        <div class="meal-item">午餐：烏難火鍋</div>
+                        <div class="meal-item">晚餐：機上餐</div>
+                    </div>
+                    
+                    <div class="stay-info">🏨 住宿：溫暖的家</div>
+                    <div class="remark">💡 備註：請提前2小時抵達機場辦理登機手續，攜帶好護照及相關證件</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 打卡記錄面板 -->
+        <div class="checkin-panel-container">
+            <h3 onclick="toggleCheckInPanel()">📸 景點打卡記錄（點擊展開）</h3>
+            <div id="checkInPanel"></div>
+        </div>
+
+        <!-- 頁腳 -->
+        <div class="trip-footer">
+            深度沙壩秘境7日越南航空考察團 | 純HTML+JS行程Web App
+        </div>
+    </div>
+
+    <!-- 引入外部JS檔案（必須放在body結束前） -->
+    <script src="trip-app.js"></script>
+</body>
+</html>
