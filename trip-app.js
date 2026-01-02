@@ -2,7 +2,6 @@
 const STORAGE_KEYS = {
     members: 'tripApp_members',
     luggage: 'tripApp_luggage',
-    reviews: 'tripApp_reviews',
     checkins: 'tripApp_checkins',
     reminders: 'tripApp_reminders',
     exchangeRate: 'tripApp_exchangeRate',

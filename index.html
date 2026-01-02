@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>深度沙壩秘境7日越南航空考察團</title>
     <style>
         /* ===== 系統字體與重置 ===== */
@@ -50,6 +50,8 @@
             padding: 0;
             line-height: 1.6;
             transition: background-color 0.3s ease;
+            /* 避免 iOS 底部安全區域遮擋 */
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
         .trip-app {
@@ -73,7 +75,9 @@
             padding: 16px 20px 12px;
             text-align: center;
             flex-shrink: 0;
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         }
         
@@ -129,6 +133,9 @@
             scrollbar-width: none;
             gap: 4px;
             padding: 0 8px;
+            position: sticky;
+            top: 66px; /* 根據 Header 高度調整 */
+            z-index: 99;
         }
         
         .tab-nav::-webkit-scrollbar {
@@ -1182,49 +1189,297 @@
         </div>
     </div>
 
-    <!-- 引入外部JS檔案 -->
-    <script src="trip-app.js"></script>
+    <!-- 邏輯腳本 (已合併為單一文件，確保 GitHub Pages 運行無誤) -->
     <script>
-        // Tab切換函數
+        // ===== 初始化数据與存儲 =====
+        const STORAGE_KEYS = {
+            members: 'tripApp_members',
+            luggage: 'tripApp_luggage',
+            checkins: 'tripApp_checkins',
+            reminders: 'tripApp_reminders',
+            exchangeRate: 'tripApp_exchangeRate',
+            darkMode: 'tripApp_darkMode'
+        };
+
+        const DEFAULT_LUGGAGE = [
+            '護照', '臺灣身份證', '機票/電子機票',
+            '行李箱/背包', '輕便衣物', '舒適運動鞋',
+            '充電器/行動電源', '轉接頭', '防曬霜/曬後修復',
+            '常用藥品', '現金/信用卡', '手機SIM卡/eSIM'
+        ];
+
+        const DEFAULT_MEMBERS = [
+            { name: 'WU CHIEH JUI', passport: '護照號待補', bookingRef: 'FZG27B', ticketNumber: '695-5529306522' },
+            { name: 'MA JUI MIN', passport: '護照號待補', bookingRef: 'FZG27B', ticketNumber: '695-5529306523' },
+            { name: 'FANG RUO YAN', passport: '護照號待補', bookingRef: 'FZG27B', ticketNumber: '695-5529306524' },
+            { name: 'CHEN LI WEN', passport: '護照號待補', bookingRef: 'FZG27B', ticketNumber: '695-5529306525' }
+        ];
+
+        // ===== 存儲管理函數 =====
+        function saveToStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch (e) {
+                console.error('存儲失敗:', e);
+                return false;
+            }
+        }
+
+        function loadFromStorage(key, defaultValue = null) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (e) {
+                console.error('讀取存儲失敗:', e);
+                return defaultValue;
+            }
+        }
+
+        // ===== 頁面初始化 =====
+        // 統一使用 DOMContentLoaded，移除 window.onload 避免衝突
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            // 移除 initializeDayCards() 調用，解決雙重觸發導致打不開的問題
+        });
+
+        function initializePage() {
+            // 1. 初始化成員列表 (修正：先讀取，如果沒有才用預設值)
+            let members = loadFromStorage(STORAGE_KEYS.members);
+            if (!members || members.length === 0) {
+                members = DEFAULT_MEMBERS;
+                saveToStorage(STORAGE_KEYS.members, members);
+            }
+            renderMemberList(members);
+            
+            // 2. 初始化打卡記錄
+            const checkins = loadFromStorage(STORAGE_KEYS.checkins) || [];
+            renderCheckInList(checkins);
+            
+            // 3. 初始化深色模式
+            const isDarkMode = loadFromStorage(STORAGE_KEYS.darkMode, false);
+            if (isDarkMode) {
+                enableDarkMode();
+            }
+            
+            // 4. 初始化貨幣匯率
+            const rate = loadFromStorage(STORAGE_KEYS.exchangeRate, 3300);
+            const rateEl = document.getElementById('exchangeRate');
+            if(rateEl) rateEl.textContent = rate;
+            
+            // 5. 綁定深色模式按鈕
+            const darkBtn = document.getElementById('darkModeBtn');
+            if(darkBtn) darkBtn.addEventListener('click', toggleDarkMode);
+
+            // 6. 更新進度條
+            updateProgress();
+        }
+
+        // ===== 互動邏輯 =====
         function switchTab(event, tabName) {
-            // 隱藏所有tab內容
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => {
+            // 隱藏所有 tab 內容
+            document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
             
-            // 移除所有按鈕的active狀態
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => {
+            // 移除所有按鈕 active
+            document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // 顯示選中的tab內容
-            document.getElementById(tabName).classList.add('active');
+            // 顯示選中內容
+            const target = document.getElementById(tabName);
+            if(target) target.classList.add('active');
             
-            // 添加active狀態到點擊的按鈕
+            // 按鈕變色
             event.target.classList.add('active');
-            
-            // 如果是行程tab，確保day-cards已初始化
-            if (tabName === 'itinerary') {
-                setTimeout(initializeDayCards, 100);
-            }
         }
         
-        // 初始化day-cards的折疊功能
-        function initializeDayCards() {
-            const dayTitles = document.querySelectorAll('.day-title');
-            dayTitles.forEach(title => {
-                if (!title.hasListener) {
-                    title.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const detail = this.nextElementSibling;
-                        this.classList.toggle('collapsed');
-                        detail.classList.toggle('show');
-                    });
-                    title.hasListener = true;
+        // 核心修正：只保留這個 toggleDay 函數供 HTML onclick 調用
+        function toggleDay(dayTitle) {
+            const detail = dayTitle.nextElementSibling;
+            const icon = dayTitle.querySelector('.toggle-icon');
+            // 切換 CSS class 實現動畫
+            dayTitle.classList.toggle('collapsed');
+            detail.classList.toggle('show');
+        }
+
+        // ===== 功能函數 =====
+        function setReminder(title, targetTime) {
+            const now = new Date().getTime();
+            const target = new Date(targetTime).getTime();
+            const diff = target - now;
+
+            if (diff < 0) {
+                alert('行程時間已過！無法設置提醒。');
+                return;
+            }
+
+            // 簡單的 alert 模擬通知
+            alert(`已設置提醒：${title}\n將於 ${targetTime} 通知您。`);
+            
+            // 實際倒數
+            setTimeout(() => {
+                // 嘗試瀏覽器通知
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('行程提醒', { body: `即將開始：${title}` });
+                } else {
+                    alert(`⏰ 行程提醒：${title} 即將開始！`);
                 }
+            }, diff);
+        }
+
+        function navigateTo(lat, lng, name) {
+            // 強制使用 HTTPS 的 Google Maps 連結，解決 GitHub Pages Mixed Content 問題
+            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            window.open(url, '_blank');
+        }
+
+        function checkInSpot(spotName, day) {
+            const now = new Date();
+            const timeStr = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            let checkins = loadFromStorage(STORAGE_KEYS.checkins) || [];
+            
+            const exists = checkins.some(c => c.spotName === spotName && c.day === day);
+            if (exists) {
+                alert('此景點已打卡過！');
+                return;
+            }
+            
+            checkins.push({ spotName, day, time: timeStr });
+            saveToStorage(STORAGE_KEYS.checkins, checkins);
+            renderCheckInList(checkins);
+            alert(`✓ ${spotName} 打卡成功！`);
+        }
+
+        function renderCheckInList(checkins) {
+            const panel = document.getElementById('checkInPanel');
+            if(!panel) return;
+            panel.innerHTML = '';
+            
+            if (checkins.length === 0) {
+                panel.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 10px;">尚未有打卡記錄</div>';
+                return;
+            }
+            
+            checkins.forEach((checkin, index) => {
+                const item = document.createElement('div');
+                item.className = 'checkin-item';
+                item.innerHTML = `
+                    <h4>${checkin.spotName}</h4>
+                    <div class="checkin-time">${checkin.day} • ${checkin.time}</div>
+                    <button class="btn-small btn-red" onclick="removeCheckIn(${index})">刪除</button>
+                `;
+                panel.appendChild(item);
             });
+        }
+
+        function removeCheckIn(index) {
+            if (!confirm('確定要刪除此打卡記錄嗎？')) return;
+            let checkins = loadFromStorage(STORAGE_KEYS.checkins) || [];
+            checkins.splice(index, 1);
+            saveToStorage(STORAGE_KEYS.checkins, checkins);
+            renderCheckInList(checkins);
+        }
+
+        function renderMemberList(members) {
+            const list = document.getElementById('memberList');
+            if(!list) return;
+            list.innerHTML = '';
+            
+            if (members.length === 0) {
+                list.innerHTML = '<div style="color: #94a3b8; font-size: 13px; text-align: center;">暫無成員</div>';
+                return;
+            }
+            
+            members.forEach(member => {
+                const item = document.createElement('div');
+                item.className = 'member-item';
+                item.innerHTML = `
+                    <div>
+                        <div>${member.name}</div>
+                        <div>🎫 機票: <span>${member.ticketNumber}</span></div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // ===== 貨幣換算 =====
+        function convertTWDToVND() {
+            const twd = parseFloat(document.getElementById('twdInput').value) || 0;
+            const rate = parseFloat(document.getElementById('exchangeRate').textContent);
+            document.getElementById('vndInput').value = Math.round(twd * rate);
+        }
+
+        function convertVNDToTWD() {
+            const vnd = parseFloat(document.getElementById('vndInput').value) || 0;
+            const rate = parseFloat(document.getElementById('exchangeRate').textContent);
+            document.getElementById('twdInput').value = (vnd / rate).toFixed(2);
+        }
+        
+        function updateExchangeRate() {
+            const current = document.getElementById('exchangeRate').textContent;
+            const newRate = prompt('輸入新匯率 (1 TWD = ? VND):', current);
+            if (newRate && !isNaN(newRate)) {
+                const rate = parseFloat(newRate);
+                saveToStorage(STORAGE_KEYS.exchangeRate, rate);
+                document.getElementById('exchangeRate').textContent = rate;
+                alert('匯率已更新！');
+                // 重新計算當前輸入
+                convertTWDToVND();
+            }
+        }
+
+        // ===== 進度條邏輯 =====
+        function updateProgress() {
+            const startDate = new Date('2026-01-23').getTime();
+            const endDate = new Date('2026-01-29').getTime();
+            const now = new Date().getTime();
+            
+            const total = endDate - startDate;
+            const current = now - startDate;
+            let percent = 0;
+            let text = '未開始';
+
+            if (now < startDate) {
+                percent = 0;
+                text = 'Day 0 / 7 (倒數中)';
+            } else if (now > endDate) {
+                percent = 100;
+                text = 'Day 7 / 7 (已結束)';
+            } else {
+                percent = (current / total) * 100;
+                const dayNum = Math.ceil(current / (1000 * 60 * 60 * 24));
+                text = `Day ${dayNum} / 7`;
+            }
+
+            const bar = document.getElementById('progressBar');
+            const txt = document.getElementById('progressText');
+            if(bar) bar.style.width = `${percent}%`;
+            if(txt) txt.textContent = text;
+        }
+
+        // ===== 深色模式 =====
+        let darkMode = false;
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            saveToStorage(STORAGE_KEYS.darkMode, darkMode);
+            if (darkMode) enableDarkMode();
+            else disableDarkMode();
+        }
+
+        function enableDarkMode() {
+            document.body.classList.add('dark');
+            const btn = document.getElementById('darkModeBtn');
+            if(btn) btn.textContent = '☀️ 日間';
+        }
+
+        function disableDarkMode() {
+            document.body.classList.remove('dark');
+            const btn = document.getElementById('darkModeBtn');
+            if(btn) btn.textContent = '🌙 夜間';
         }
     </script>
 </body>
